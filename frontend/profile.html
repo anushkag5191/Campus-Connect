@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Profile</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+body {
+  margin: 0;
+  padding: 40px;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background-color: #f5f7fb;
+}
+</style>
+</head>
+<body>
+
+<div class="p-4 md:p-8">
+  <div class="max-w-4xl mx-auto">
+
+    <!-- HEADER -->
+    <div class="flex justify-between items-center mb-8">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900">My Profile</h1>
+        <p class="text-gray-600 mt-1">Manage your profile and career information</p>
+      </div>
+      <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+        💾 Save Changes
+      </button>
+    </div>
+
+    <!-- PROFILE CARD -->
+    <div class="bg-white rounded-xl shadow mb-8">
+      <div class="p-8 flex flex-col md:flex-row items-center gap-6">
+
+        <!-- Profile Image -->
+        <div class="w-24 h-24 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center">
+          <span class="text-white text-3xl">👤</span>
+        </div>
+
+        <!-- Profile Info -->
+        <div class="text-center md:text-left">
+          <h2 id="profileName" class="text-2xl font-bold text-gray-900">Student Name</h2>
+          <p id="profileCourseBranch" class="text-gray-600 mt-1">Course - Branch</p>
+          <p id="profileYear" class="text-gray-600">Class of Year</p>
+          <p id="profileEmail" class="text-sm text-gray-500 mt-1">youremail@example.com</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="bg-white rounded-xl shadow p-6">
+
+      <div class="grid grid-cols-4 mb-6 text-center border rounded-lg overflow-hidden">
+        <button class="tab-btn py-2 bg-blue-600 text-white" data-src="personal.html">Personal</button>
+        <button class="tab-btn py-2 bg-gray-100" data-src="academic.html">Academic</button>
+        <button class="tab-btn py-2 bg-gray-100" data-src="career.html">Career</button>
+        <button class="tab-btn py-2 bg-gray-100" data-src="skills.html">Skills</button>
+      </div>
+
+      <iframe id="tabContent" src="personal.html" class="w-full h-[600px] border-0 rounded-xl"></iframe>
+
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ---------------- TAB SWITCHING ---------------- */
+const tabs = document.querySelectorAll('.tab-btn');
+const iframe = document.getElementById('tabContent');
+
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    // Reset all tabs
+    tabs.forEach(t => {
+      t.classList.remove('bg-blue-600','text-white');
+      t.classList.add('bg-gray-100');
+    });
+
+    // Activate clicked tab
+    tab.classList.add('bg-blue-600','text-white');
+    tab.classList.remove('bg-gray-100');
+
+    // Load the HTML page in iframe
+    const src = tab.getAttribute('data-src');
+    iframe.src = src;
+  });
+});
+
+/* ---------------- LOAD USER DATA ---------------- */
+const userName = localStorage.getItem("campusUser");
+const email = localStorage.getItem("email");
+const admissionYear = localStorage.getItem("admissionYear");
+const course = localStorage.getItem("course");
+const branch = localStorage.getItem("branch");
+
+// Redirect to login if no user
+if (!userName) { 
+  window.location.href = "login.html"; 
+}
+
+// Populate profile info
+document.getElementById("profileName").innerText = userName;
+document.getElementById("profileCourseBranch").innerText = `${course} - ${branch}`;
+document.getElementById("profileYear").innerText = `Class of ${admissionYear}`;
+document.getElementById("profileEmail").innerText = email;
+</script>
+
+</body>
+</html>

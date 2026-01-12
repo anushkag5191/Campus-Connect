@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Campus Connect | Dashboard</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    body { font-family: Arial, sans-serif; }
+  </style>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+
+<!-- ================= HEADER ================= -->
+<header class="bg-white border-b sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
+
+    <!-- Logo -->
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+        <i data-lucide="users" class="text-white w-6 h-6"></i>
+      </div>
+      <div>
+        <h1 class="text-xl font-bold">Campus Connect</h1>
+        <p class="text-xs text-gray-500">Junior-Senior Network</p>
+      </div>
+    </div>
+
+    <!-- Nav -->
+    <nav class="hidden lg:flex items-center gap-2 text-sm">
+      <a class="px-4 py-2 rounded-lg bg-blue-100 text-blue-700 font-medium">Dashboard</a>
+      <a href="profile.html" class="px-4 py-2 rounded-lg hover:bg-gray-100">My Profile</a>
+      <a href="connect.html" class="px-4 py-2 rounded-lg hover:bg-gray-100">Connect</a>
+      <a href="#" class="px-4 py-2 rounded-lg hover:bg-gray-100">Q&A Forum</a>
+      <a href="#" class="px-4 py-2 rounded-lg hover:bg-gray-100">FAQ</a>
+    </nav>
+
+    <!-- Logout -->
+    <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-600">
+      Logout
+    </button>
+  </div>
+</header>
+
+<!-- ================= MAIN ================= -->
+<main class="max-w-7xl mx-auto px-4 py-8">
+
+  <!-- HERO -->
+  <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white mb-8 flex justify-between items-center">
+    <div>
+      <h1 class="text-3xl font-bold" id="welcomeMessage">Welcome back 👋</h1>
+      <p class="text-blue-100 mt-2">Ready to connect and grow your network today?</p>
+    </div>
+    <div class="hidden md:flex gap-3">
+      <button class="bg-white/20 px-4 py-2 rounded-lg">Ask Question</button>
+      <button class="bg-white text-blue-600 px-4 py-2 rounded-lg">Find Mentors</button>
+    </div>
+  </div>
+
+  <!-- ================= STATS ================= -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+
+    <div class="bg-white rounded-xl shadow p-6 flex justify-between items-center">
+      <div>
+        <p class="text-sm text-gray-500">People Mentored</p>
+        <p class="text-3xl font-bold">0</p>
+      </div>
+      <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center">
+        <i data-lucide="users"></i>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow p-6 flex justify-between items-center">
+      <div>
+        <p class="text-sm text-gray-500">Connections Made</p>
+        <p class="text-3xl font-bold">0</p>
+      </div>
+      <div class="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center">
+        <i data-lucide="message-circle"></i>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow p-6 flex justify-between items-center">
+      <div>
+        <p class="text-sm text-gray-500">Questions Asked</p>
+        <p class="text-3xl font-bold">0</p>
+      </div>
+      <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center">
+        <i data-lucide="help-circle"></i>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow p-6 flex justify-between items-center">
+      <div>
+        <p class="text-sm text-gray-500">Badges Earned</p>
+        <p class="text-3xl font-bold">0</p>
+      </div>
+      <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center">
+        <i data-lucide="award"></i>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================= LOWER LAYOUT ================= -->
+  <div class="grid lg:grid-cols-3 gap-6">
+
+    <!-- LEFT -->
+    <div class="lg:col-span-2 space-y-6">
+
+      <div class="bg-white rounded-xl shadow">
+        <div class="p-5 border-b font-semibold flex gap-2">
+          <i data-lucide="users"></i> Connection Requests
+        </div>
+        <div class="p-14 text-center text-gray-400">
+          <i data-lucide="users" class="w-16 h-16 mx-auto mb-3"></i>
+          No pending connection requests
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow">
+        <div class="p-5 border-b font-semibold flex gap-2">
+          <i data-lucide="message-circle"></i> Messages
+        </div>
+        <div class="grid grid-cols-3 min-h-[360px]">
+          <div class="border-r p-4 text-gray-500">No connections yet</div>
+          <div class="col-span-2 flex flex-col items-center justify-center text-gray-400">
+            <i data-lucide="message-circle" class="w-16 h-16 mb-3"></i>
+            Select a connection to start chatting
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT -->
+    <div class="space-y-6">
+
+      <div class="bg-white rounded-xl shadow">
+        <div class="p-5 border-b font-semibold flex gap-2">
+          <i data-lucide="user"></i> Profile Status
+        </div>
+        <div class="p-5 space-y-3 text-sm">
+          <div class="flex justify-between">
+            <span>Basic Info</span>
+            <span class="bg-black text-white px-2 py-1 rounded text-xs">Complete</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Academic Details</span>
+            <span class="bg-black text-white px-2 py-1 rounded text-xs">Complete</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Career Info</span>
+            <span class="bg-gray-200 px-2 py-1 rounded text-xs">Incomplete</span>
+          </div>
+          <button class="w-full bg-blue-600 text-white py-2 rounded-lg">
+            Update Profile
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow">
+        <div class="p-5 border-b font-semibold">Quick Actions</div>
+        <div class="p-5 space-y-3">
+          <button class="w-full border rounded-lg py-2 flex gap-2 justify-center">
+            <i data-lucide="message-circle"></i> Ask a Question
+          </button>
+          <button class="w-full border rounded-lg py-2 flex gap-2 justify-center">
+            <i data-lucide="users"></i> Find Senior Mentors
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<script>
+  function logout() {
+    localStorage.clear();
+    window.location.href = "login.html";
+  }
+
+  const user = localStorage.getItem("campusUser") || "User";
+  document.getElementById("welcomeMessage").innerText = `Welcome back, ${user}! 👋`;
+
+  lucide.createIcons();
+</script>
+
+</body>
+</html>
