@@ -32,6 +32,9 @@
       />
 
       <div class="grid md:grid-cols-3 gap-4">
+         <select class="border rounded-lg px-4 py-3">
+          <option>All Program</option>
+        </select>
         <select class="border rounded-lg px-4 py-3">
           <option>All Branches</option>
         </select>
@@ -98,6 +101,7 @@ function renderProfiles(list) {
 // Search & filter logic
 function applyFilters() {
   let search = document.getElementById("searchBox").value.toLowerCase();
+  let programme = document.getElementById("programmeFilter").value;
   let branch = document.getElementById("branchFilter").value;
   let year = document.getElementById("yearFilter").value;
   let exam = document.getElementById("examFilter").value;
@@ -106,12 +110,12 @@ function applyFilters() {
     let nameMatch =
       u.first_name.toLowerCase().includes(search) ||
       u.last_name.toLowerCase().includes(search);
-
+    let programmeMatch = program ==="All" || u.programme === programme;
     let branchMatch = branch === "All" || u.branch === branch;
     let yearMatch = year === "All" || u.year === year;
     let examMatch = exam === "All" || u.exam === exam;
 
-    return nameMatch && branchMatch && yearMatch && examMatch;
+    return nameMatch && programmeMatch && branchMatch && yearMatch && examMatch;
   });
 
   renderProfiles(filtered);
@@ -119,10 +123,11 @@ function applyFilters() {
 
 // Fill dropdowns dynamically
 function fillDropdowns() {
+   let programmes = [...new Set(allUsers.map(u => u.programme))];
   let branches = [...new Set(allUsers.map(u => u.branch))];
   let years = [...new Set(allUsers.map(u => u.year))];
   let exams = [...new Set(allUsers.map(u => u.exam))];
-
+  programme.forEach(p=> programmeFilter.innerHTML +=`<option>${b}</option>`);
   branches.forEach(b => branchFilter.innerHTML += `<option>${b}</option>`);
   years.forEach(y => yearFilter.innerHTML += `<option>${y}</option>`);
   exams.forEach(e => examFilter.innerHTML += `<option>${e}</option>`);
@@ -131,4 +136,5 @@ function fillDropdowns() {
 
 </body>
 </html>
+
 
