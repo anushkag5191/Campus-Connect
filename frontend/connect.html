@@ -17,7 +17,7 @@
       Connect with Seniors & Peers
     </h1>
     <p class="text-gray-600 mt-2">
-      Find mentors and peers based on program, year, and interests
+      Find mentors based on exam preparation, branch, and experience
     </p>
   </header>
 
@@ -25,30 +25,24 @@
   <section class="max-w-7xl mx-auto px-6 mt-8">
     <div class="bg-white rounded-xl shadow p-6 space-y-4">
 
-      <!-- SEARCH -->
       <input
-        id="searchBox"
         type="text"
-        placeholder="Search by name or email..."
+        placeholder="Search by name, branch or exam..."
         class="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        oninput="applyFilters()"
       />
 
-      <!-- DROPDOWNS -->
       <div class="grid md:grid-cols-3 gap-4">
-
-        <select id="programFilter" class="border rounded-lg px-4 py-3" onchange="applyFilters()">
-          <option value="All">All Programs</option>
+        <select class="border rounded-lg px-4 py-3">
+          <option>All Branches</option>
         </select>
 
-        <select id="yearFilter" class="border rounded-lg px-4 py-3" onchange="applyFilters()">
-          <option value="All">All Admission Years</option>
+        <select class="border rounded-lg px-4 py-3">
+          <option>All Years</option>
         </select>
 
-        <select id="genderFilter" class="border rounded-lg px-4 py-3" onchange="applyFilters()">
-          <option value="All">All Genders</option>
+        <select class="border rounded-lg px-4 py-3">
+          <option>All Exam Prep</option>
         </select>
-
       </div>
 
     </div>
@@ -60,112 +54,80 @@
       id="userGrid"
       class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
     >
-      <!-- Profiles injected here -->
+      <!-- Profiles will be injected here -->
     </div>
   </main>
 
   <!-- ================= SCRIPT ================= -->
   <script>
-    let allUsers = [];
-    const grid = document.getElementById("userGrid");
+let allUsers = [];
+const grid = document.getElementById("userGrid");
 
-    // ================= FETCH USERS =================
-    fetch("http://localhost:3000/users")
-      .then(res => res.json())
-      .then(data => {
-        allUsers = data;
-        renderProfiles(allUsers);
-        fillDropdowns();
-      })
-      .catch(err => console.error("Error fetching users:", err));
+// Fetch users
+fetch("http://localhost:3000/users")
+  .then(res => res.json())
+  .then(data => {
+    allUsers = data;
+    renderProfiles(allUsers);
+    fillDropdowns();
+  });
 
-    // ================= RENDER PROFILES =================
-    function renderProfiles(users) {
-      grid.innerHTML = "";
+// Render profiles
+function renderProfiles(list) {
+  grid.innerHTML = "";
 
-      if (users.length === 0) {
-        grid.innerHTML = `
-          <div class="col-span-full text-center text-gray-500 py-20">
-            <p class="text-lg font-medium">No profiles found</p>
-          </div>`;
-        return;
-      }
+  if (list.length === 0) {
+    grid.innerHTML = `
+      <div class="col-span-full text-center text-gray-500 py-20">
+        <p class="text-lg font-medium">No profiles found</p>
+      </div>`;
+    return;
+  }
 
-      users.forEach(u => {
-        grid.innerHTML += `
-          <div class="bg-white rounded-xl shadow p-6 space-y-2">
-            <h3 class="text-xl font-semibold text-gray-900">
-              ${u.first_name} ${u.last_name}
-            </h3>
+  list.forEach(u => {
+    grid.innerHTML += `
+      <div class="bg-white rounded-xl shadow p-6 space-y-2">
+        <h3 class="text-xl font-semibold">${u.first_name} ${u.last_name}</h3>
+        <p class="text-sm">Branch: ${u.branch}</p>
+        <p class="text-sm">Year: ${u.year}</p>
+        <p class="text-sm">Exam Prep: ${u.exam}</p>
+      </div>`;
+  });
+}
 
-            <p class="text-sm text-gray-600">
-              <strong>Email:</strong> ${u.email_id}
-            </p>
+// Search & filter logic
+function applyFilters() {
+  let search = document.getElementById("searchBox").value.toLowerCase();
+  let branch = document.getElementById("branchFilter").value;
+  let year = document.getElementById("yearFilter").value;
+  let exam = document.getElementById("examFilter").value;
 
-            <p class="text-sm text-gray-600">
-              <strong>Program:</strong> ${u.program || "N/A"}
-            </p>
+  let filtered = allUsers.filter(u => {
+    let nameMatch =
+      u.first_name.toLowerCase().includes(search) ||
+      u.last_name.toLowerCase().includes(search);
 
-            <p class="text-sm text-gray-600">
-              <strong>Admission Year:</strong> ${u.admission_year}
-            </p>
+    let branchMatch = branch === "All" || u.branch === branch;
+    let yearMatch = year === "All" || u.year === year;
+    let examMatch = exam === "All" || u.exam === exam;
 
-            <p class="text-sm text-gray-600">
-              <strong>Gender:</strong> ${u.gender || "N/A"}
-            </p>
-          </div>
-        `;
-      });
-    }
+    return nameMatch && branchMatch && yearMatch && examMatch;
+  });
 
-    // ================= APPLY FILTERS =================
-    function applyFilters() {
-      const search = document.getElementById("searchBox").value.toLowerCase();
-      const program = document.getElementById("programFilter").value;
-      const year = document.getElementById("yearFilter").value;
-      const gender = document.getElementById("genderFilter").value;
+  renderProfiles(filtered);
+}
 
-      const filtered = allUsers.filter(u => {
-        const matchesSearch =
-          u.first_name.toLowerCase().includes(search) ||
-          u.last_name.toLowerCase().includes(search) ||
-          u.email_id.toLowerCase().includes(search);
+// Fill dropdowns dynamically
+function fillDropdowns() {
+  let branches = [...new Set(allUsers.map(u => u.branch))];
+  let years = [...new Set(allUsers.map(u => u.year))];
+  let exams = [...new Set(allUsers.map(u => u.exam))];
 
-        const matchesProgram =
-          program === "All" || u.program === program;
-
-        const matchesYear =
-          year === "All" || u.admission_year == year;
-
-        const matchesGender =
-          gender === "All" || u.gender === gender;
-
-        return (
-          matchesSearch &&
-          matchesProgram &&
-          matchesYear &&
-          matchesGender
-        );
-      });
-
-      renderProfiles(filtered);
-    }
-
-    // ================= FILL DROPDOWNS =================
-    function fillDropdowns() {
-      const programFilter = document.getElementById("programFilter");
-      const yearFilter = document.getElementById("yearFilter");
-      const genderFilter = document.getElementById("genderFilter");
-
-      const programs = [...new Set(allUsers.map(u => u.program).filter(Boolean))];
-      const years = [...new Set(allUsers.map(u => u.admission_year))];
-      const genders = [...new Set(allUsers.map(u => u.gender).filter(Boolean))];
-
-      programs.forEach(p => programFilter.innerHTML += `<option>${p}</option>`);
-      years.forEach(y => yearFilter.innerHTML += `<option>${y}</option>`);
-      genders.forEach(g => genderFilter.innerHTML += `<option>${g}</option>`);
-    }
-  </script>
+  branches.forEach(b => branchFilter.innerHTML += `<option>${b}</option>`);
+  years.forEach(y => yearFilter.innerHTML += `<option>${y}</option>`);
+  exams.forEach(e => examFilter.innerHTML += `<option>${e}</option>`);
+}
+</script>
 
 </body>
 </html>
