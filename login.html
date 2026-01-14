@@ -114,32 +114,40 @@
         <a href="signin.html">Get Started</a>
     </div>
 </div>
-
 <script>
-  document.getElementById("loginForm").addEventListener("submit", function(e) {
-    e.preventDefault();
+document.getElementById("loginForm").addEventListener("submit", function(e) {
+  e.preventDefault();
 
-    const userid = document.getElementById("userid").value.trim();
-    const password = document.getElementById("password").value;
+  const userid = document.getElementById("userid").value.trim();
+  const password = document.getElementById("password").value;
 
-    let users = JSON.parse(localStorage.getItem("users")) || [];
+  let users = [];
+  try {
+    users = JSON.parse(localStorage.getItem("users")) || [];
+  } catch (err) {
+    users = [];
+  }
 
-    const user = users.find(
-      u => u.userid === userid && u.password === password
-    );
+  // Use exact property name from sign-up: userId
+  const user = users.find(u => u.userId === userid && u.password === password);
 
-    if (!user) {
-      alert("Invalid user ID or password");
-      return;
-    }
+  if (!user) {
+    alert("Invalid user ID or password");
+    return;
+  }
 
-    // Save logged-in user
-    localStorage.setItem("campusUser", user.userid);
+  // Save logged-in user info
+  localStorage.setItem("campusUser", user.username);
+  localStorage.setItem("email", user.email);
+  localStorage.setItem("admissionYear", user.admissionYear);
+  localStorage.setItem("course", user.course);
+  localStorage.setItem("branch", user.branch);
 
-    // Redirect
-    window.location.href = "dashboard.html";
-  });
+  // Redirect
+  window.location.href = "dashboard.html";
+});
 </script>
 
 </body>
 </html>
+
