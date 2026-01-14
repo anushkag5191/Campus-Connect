@@ -128,8 +128,10 @@ app.put("/users/:id", async (req, res) => {
     last_name,
     email_id,
     phone_number,
-    gender,
-    admission_year
+    alternate_phone,
+    bio,
+    dob,
+    gender
   } = req.body;
 
   try {
@@ -141,8 +143,10 @@ app.put("/users/:id", async (req, res) => {
       .input("last_name", sql.VarChar, last_name)
       .input("email_id", sql.VarChar, email_id)
       .input("phone_number", sql.VarChar, phone_number || "")
+      .input("alternate_phone", sql.VarChar, alternate_phone || "")
+      .input("bio", sql.VarChar, bio || "")
+      .input("dob", sql.Date, dob || null)
       .input("gender", sql.VarChar, gender || "")
-      .input("admission_year", sql.Int, admission_year)
       .query(`
         UPDATE Users
         SET 
@@ -150,12 +154,14 @@ app.put("/users/:id", async (req, res) => {
           last_name = @last_name,
           email_id = @email_id,
           phone_number = @phone_number,
-          gender = @gender,
-          admission_year = @admission_year
+          alternate_phone = @alternate_phone,
+          bio = @bio,
+          dob = @dob,
+          gender = @gender
         WHERE user_id = @id
       `);
 
-    res.json({ message: "User updated successfully" });
+    res.json({ message: "Profile saved successfully!" });
   } catch (err) {
     console.error("❌ Error updating user:", err);
     res.status(500).json({ error: err.message });
@@ -186,3 +192,4 @@ app.delete("/users/:id", async (req, res) => {
 app.listen(3000, () => {
   console.log("🚀 Server running on port 3000");
 });
+
