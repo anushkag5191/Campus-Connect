@@ -72,88 +72,30 @@ body {
 
   </div>
 </div>
-
 <script>
 /* ---------------- AUTH CHECK ---------------- */
 const userId = localStorage.getItem("campusUser");
 if (!userId) {
+  alert("Please login first");
   window.location.href = "login.html";
 }
 
-/* ---------------- TAB SWITCHING ---------------- */
-const tabs = document.querySelectorAll(".tab-btn");
-const iframe = document.getElementById("tabContent");
+/* ---------------- LOAD PROFILE FROM LOCAL STORAGE ---------------- */
+document.getElementById("profileName").innerText =
+  localStorage.getItem("campusUser");   // username
 
-tabs.forEach(tab => {
-  tab.addEventListener("click", () => {
-    tabs.forEach(t => {
-      t.classList.remove("bg-blue-600", "text-white");
-      t.classList.add("bg-gray-100");
-    });
+document.getElementById("profileBranch").innerText =
+  `${localStorage.getItem("course")} - ${localStorage.getItem("branch")}`;
 
-    tab.classList.add("bg-blue-600", "text-white");
-    tab.classList.remove("bg-gray-100");
+document.getElementById("profileYear").innerText =
+  `Year of Admission: ${localStorage.getItem("admissionYear")}`;
 
-    iframe.src = tab.dataset.src;
-  });
-});
-
-/* ---------------- LOAD USER PROFILE ---------------- */
-async function loadUserProfile() {
-  try {
-    const res = await fetch(
-      `http://localhost:3000/get-user-profile/${userId}`
-    );
-    const data = await res.json();
-
-    document.getElementById("profileName").innerText = data.username;
-    document.getElementById("profileBranch").innerText = `Branch: ${data.branch}`;
-    document.getElementById("profileYear").innerText =
-      `Year of Admission: ${data.yearOfAdmission}`;
-    document.getElementById("profileEmail").innerText = data.email;
-
-  } catch (err) {
-    console.error("Error loading user profile", err);
-  }
-}
-
-loadUserProfile();
-
-/* ---------------- SAVE PROFILE (PERSONAL TAB) ---------------- */
-document.getElementById("saveBtn").addEventListener("click", async () => {
-
-  const doc = iframe.contentWindow.document;
-
-  const data = {
-    userId,
-    firstName: doc.getElementById("firstName")?.value,
-    lastName: doc.getElementById("lastName")?.value,
-    bio: doc.getElementById("bio")?.value,
-    dob: doc.getElementById("dob")?.value,
-    gender: doc.getElementById("gender")?.value,
-    phone: doc.getElementById("phone")?.value,
-    altPhone: doc.getElementById("altPhone")?.value,
-    email: doc.getElementById("email")?.value,
-    address: doc.getElementById("address")?.value,
-    pincode: doc.getElementById("pincode")?.value
-  };
-
-  try {
-    const res = await fetch("http://localhost:3000/save-profile", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    });
-
-    const result = await res.json();
-    alert(result.message);
-
-  } catch (err) {
-    alert("Error saving profile");
-  }
-});
+document.getElementById("profileEmail").innerText =
+  localStorage.getItem("email");
 </script>
+
 
 </body>
 </html>
+
 
