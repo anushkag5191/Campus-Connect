@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAQ Section</title>
+<style>
+  /* Basic Reset */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  body {
+    background-color: #f9f9f9;
+    padding: 40px 20px;
+  }
+
+  .faq-container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .faq-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .faq-header h1 {
+    font-size: 28px;
+    margin-bottom: 10px;
+    color: #111827;
+  }
+
+  .faq-header p {
+    color: #6b7280;
+    font-size: 16px;
+  }
+
+  /* Search Box */
+  .faq-search {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  .faq-search input {
+    width: 100%;
+    max-width: 500px;
+    padding: 12px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+    font-size: 14px;
+    outline: none;
+  }
+
+  /* Categories */
+  .faq-categories {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+    gap: 10px;
+  }
+
+  .faq-categories button {
+    padding: 8px 20px;
+    border-radius: 9999px;
+    border: none;
+    background-color: #f3f4f6;
+    color: #374151;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+  }
+
+  .faq-categories button.active,
+  .faq-categories button:hover {
+    background-color: #7c3aed;
+    color: #fff;
+  }
+
+  /* FAQ Items */
+  .faq-item {
+    background-color: #fff;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    padding: 15px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .faq-item:hover {
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+
+  .faq-item .question {
+    font-weight: 500;
+    color: #111827;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .faq-item .answer {
+    margin-top: 10px;
+    display: none;
+    color: #6b7280;
+    font-size: 14px;
+  }
+
+  .faq-item.active .answer {
+    display: block;
+  }
+
+  .faq-item .tag {
+    background-color: #f3f4f6;
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-size: 12px;
+    color: #374151;
+    margin-right: 10px;
+  }
+
+  .faq-item .toggle-icon {
+    font-size: 18px;
+    transition: transform 0.3s;
+  }
+
+  .faq-item.active .toggle-icon {
+    transform: rotate(180deg);
+  }
+</style>
+</head>
+<body>
+
+<div class="faq-container">
+  <div class="faq-header">
+    <h1>How can we help you?</h1>
+    <p>Find answers to common questions about Campus Connect</p>
+  </div>
+
+  <div class="faq-search">
+    <input type="text" placeholder="Search FAQs..." id="searchInput">
+  </div>
+
+  <div class="faq-categories">
+    <button class="active" data-category="all">All</button>
+    <button data-category="admissions">Admissions</button>
+    <button data-category="academics">Academics</button>
+    <button data-category="campus">Campus Life</button>
+    <button data-category="career">Career</button>
+    <button data-category="financial">Financial</button>
+  </div>
+
+  <div class="faq-list">
+    <div class="faq-item" data-category="general">
+      <div class="question">
+        <span><span class="tag">general</span> How do I create an account on Campus Connect?</span>
+        <span class="toggle-icon">&#9660;</span>
+      </div>
+      <div class="answer">
+        To create an account, click the Sign Up button, fill in your details, and verify your email.
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="general">
+      <div class="question">
+        <span><span class="tag">general</span> How can I find a mentor?</span>
+        <span class="toggle-icon">&#9660;</span>
+      </div>
+      <div class="answer">
+        You can find a mentor by visiting the Mentor section on your dashboard and browsing available mentors.
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="admissions">
+      <div class="question">
+        <span><span class="tag">admissions</span> What is the admission process?</span>
+        <span class="toggle-icon">&#9660;</span>
+      </div>
+      <div class="answer">
+        The admission process involves submitting your application, attending an interview, and receiving acceptance.
+      </div>
+    </div>
+
+    <div class="faq-item" data-category="career">
+      <div class="question">
+        <span><span class="tag">career</span> How do I apply for internships?</span>
+        <span class="toggle-icon">&#9660;</span>
+      </div>
+      <div class="answer">
+        You can apply for internships by visiting the Career section and browsing available opportunities.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Toggle FAQ answers
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.addEventListener('click', () => {
+      item.classList.toggle('active');
+    });
+  });
+
+  // Filter by category
+  const categoryButtons = document.querySelectorAll('.faq-categories button');
+  const faqItems = document.querySelectorAll('.faq-item');
+
+  categoryButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      categoryButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+
+      const category = button.dataset.category;
+      faqItems.forEach(item => {
+        if(category === 'all' || item.dataset.category === category) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  // Search functionality
+  const searchInput = document.getElementById('searchInput');
+  searchInput.addEventListener('input', () => {
+    const query = searchInput.value.toLowerCase();
+    faqItems.forEach(item => {
+      const questionText = item.querySelector('.question span').textContent.toLowerCase();
+      if(questionText.includes(query)) {
+        item.style.display = 'block';
+      } else {
+        item.style.display = 'none';
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

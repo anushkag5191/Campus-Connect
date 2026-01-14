@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Campus Connect | Chat</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="min-h-screen bg-gray-50">
+
+<!-- HEADER -->
+<header class="bg-white border-b p-4 flex items-center gap-3">
+  <button onclick="goBack()" class="text-gray-500 hover:text-black">
+    <i data-lucide="arrow-left"></i>
+  </button>
+  <h2 class="font-semibold text-lg" id="chatUserName">Chat</h2>
+</header>
+
+<!-- CHAT AREA -->
+<div class="max-w-4xl mx-auto h-[calc(100vh-64px)] flex flex-col">
+
+  <!-- Messages -->
+  <div id="messages"
+       class="flex-1 p-4 space-y-3 overflow-y-auto bg-gray-100">
+  </div>
+
+  <!-- Input -->
+  <div class="p-4 bg-white border-t flex gap-3">
+    <input id="messageInput"
+      type="text"
+      placeholder="Type a message..."
+      class="flex-1 border rounded-lg px-4 py-2"/>
+
+    <button onclick="sendMessage()"
+      class="bg-blue-600 text-white px-6 rounded-lg hover:bg-blue-700">
+      Send
+    </button>
+  </div>
+</div>
+
+<script>
+lucide.createIcons();
+
+/* ---------- LOAD ACTIVE CHAT ---------- */
+const userId = localStorage.getItem("activeChatId");
+const connections = JSON.parse(localStorage.getItem("connections")) || [];
+const messages = JSON.parse(localStorage.getItem("messages")) || [];
+
+const connection = connections.find(c => c.id == userId);
+
+if (!connection) {
+  alert("No active chat found");
+  window.location.href = "connect.html";
+}
+
+document.getElementById("chatUserName").innerText = connection.name;
+
+/* ---------- RENDER MESSAGES ---------- */
+const messagesDiv = document.getElementById("messages");
+
+function renderMessages() {
+  messagesDiv.innerHTML = "";
+
+  messages
+    .filter(m => m.chatId == userId)
+    .forEach(m => {
+      const align = m.sender === "me" ? "justify-end" : "justify-start";
+      const bg = m.sender === "me" ? "bg-blue-600 text-white" : "bg-white";
+
+      messagesDiv.innerHTML += `
+        <div class="flex ${align}">
+          <div class="px-4 py-2 rounded-lg max-w-xs ${bg}">
+            ${m.text}
+          </div>
+        </div>
+      `;
+    });
+
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+renderMessages();
+
+/* ---------- SEND MESSAGE ---------- */
+function sendMessage() {
+  const input = document.getElementById("messageInput");
+  const text = input.value.trim();
+
+  if (!text) return;
+
+  messages.push({
+    chatId: userId,
+    sender: "me",
+    text,
+    time: Date.now()
+  });
+
+  localStorage.setItem("messages", JSON.stringify(messages));
+  input.value = "";
+  renderMessages();
+
+  // fake reply (demo)
+  setTimeout(() => {
+    messages.push({
+      chatId: userId,
+      sender: "other",
+      text: "Thanks for your message 👍",
+      time: Date.now()
+    });
+    localStorage.setItem("messages", JSON.stringify(messages));
+    renderMessages();
+  }, 1000);
+}
+
+/* ---------- BACK ---------- */
+function goBack() {
+  window.location.href = "connect.html";
+}
+</script>
+
+</body>
+</html>

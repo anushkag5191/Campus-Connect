@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>People Mentored</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-white shadow p-4 flex justify-between items-center sticky top-0 z-50">
+    <h1 class="text-xl font-bold">People Mentored</h1>
+    <a href="dashboard.html" class="text-blue-600 hover:underline">Back to Dashboard</a>
+  </header>
+
+  <!-- List Container -->
+  <main class="max-w-3xl mx-auto mt-6">
+    <div id="mentoredList" class="space-y-4">
+      <!-- Dynamic mentor cards will be injected here -->
+    </div>
+  </main>
+
+  <script>
+    // ===== Badge rules based on mentored count =====
+    function getMentorBadgeEmoji(count) {
+      if (count >= 50) return "💎";   // Platinum
+      if (count >= 35) return "🥇";   // Gold
+      if (count >= 20) return "🥈";   // Silver
+      if (count >= 5) return "🥉";    // Bronze
+      return ""; // No badge
+    }
+    
+ 
+  
+    // ===== Fetch people mentored from LocalStorage =====
+    const peopleMentored = JSON.parse(localStorage.getItem("peopleMentored")) || [];
+    const listContainer = document.getElementById("mentoredList");
+
+    if (peopleMentored.length === 0) {
+      listContainer.innerHTML = `
+        <p class="text-gray-400 text-center py-10">
+          You haven't mentored anyone yet.
+        </p>
+      `;
+    }
+
+    // ===== Create mentor cards dynamically =====
+    peopleMentored.forEach(person => {
+      // badge based on their mentored count
+      const badge = getMentorBadgeEmoji(person.mentoredCount || 0);
+
+      const card = document.createElement("div");
+      card.className = "bg-white p-4 rounded-xl shadow flex items-center gap-4 hover:bg-gray-50 transition";
+
+      card.innerHTML = `
+        <img src="${person.avatar}" class="w-12 h-12 rounded-full" alt="${person.name}">
+        <div>
+          <p class="font-semibold">${person.name} ${badge}</p>
+          <p class="text-sm text-gray-500">${person.title}</p>
+          <p class="text-xs text-gray-400 mt-1">Mentored ${person.mentoredCount || 0} people</p>
+        </div>
+        <button class="ml-auto px-3 py-1 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">Message</button>
+      `;
+      listContainer.appendChild(card);
+    });
+
+    lucide.createIcons();
+  </script>
+
+</body>
+<script>
+  // Sample data for testing badges
+  const sampleMentoredData = [
+    { name: "Anushka Gautam", title: "CS", avatar: "https://i.pravatar.cc/150?img=1", mentoredCount: 7 },
+    { name: "Anushka Gupta", title: "AI", avatar: "https://i.pravatar.cc/150?img=2", mentoredCount: 22 },
+    { name: "Khusha Rathee", title: "Cybersecurity", avatar: "https://i.pravatar.cc/150?img=3", mentoredCount: 36 },
+    { name: "Amaya Budhiraja", title: "Data Science", avatar: "https://i.pravatar.cc/150?img=4", mentoredCount: 52 }
+  ];
+
+  // Only set this if LocalStorage is empty (so you don't overwrite real data)
+  if (!localStorage.getItem("peopleMentored")) {
+    localStorage.setItem("peopleMentored", JSON.stringify(sampleMentoredData));
+  }
+</script>
+
+</html>

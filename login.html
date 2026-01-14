@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Campus Connect | Login</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            background: linear-gradient(135deg, #5f4dee, #8b6cf6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card {
+            background: #ffffff;
+            width: 380px;
+            padding: 35px 30px;
+            border-radius: 18px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+
+        .logo {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(135deg, #5f4dee, #8b6cf6);
+            border-radius: 14px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            color: #fff;
+        }
+
+        h2 {
+            margin: 10px 0 5px;
+            font-size: 24px;
+            color: #222;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .btn {
+            margin-top: 10px;
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #5f4dee, #8b6cf6);
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+    <div class="logo">👥</div>
+    <h2>Campus Connect</h2>
+    <p class="subtitle">Connect with seniors & peers</p>
+
+    <form id="loginForm">
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" id="username" placeholder="Enter username" required>
+        </div>
+
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" placeholder="Enter password" required>
+        </div>
+
+        <button type="submit" class="btn">Login</button>
+    </form>
+    
+        <div class="footer-text">
+            Don’t have an account?
+            <a href="signin.html">Get Started</a>
+        </div>
+</div>
+
+<script>
+  document.getElementById("loginForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const username = document.getElementById("username").value.trim();
+    const password = document.querySelector('input[type="password"]').value;
+
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+
+    const user = users.find(
+      u => u.username === username && u.password === password
+    );
+
+    if (!user) {
+      alert("Invalid username or password");
+      return;
+    }
+
+    // Save logged-in user
+    localStorage.setItem("campusUser", user.username);
+
+    // Redirect
+    window.location.href = "dashboard.html";
+  });
+</script>
+
+</body>
+</html>

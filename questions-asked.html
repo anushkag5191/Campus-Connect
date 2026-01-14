@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Questions Asked</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-white shadow p-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold">Questions Asked</h1>
+    <a href="dashboard.html" class="text-blue-600 hover:underline">Back to Dashboard</a>
+  </header>
+
+  <!-- List -->
+  <main class="max-w-3xl mx-auto mt-6">
+    <div id="questionsList" class="space-y-4">
+      <!-- Cards will appear here -->
+    </div>
+  </main>
+
+  <script>
+    // Clear old sample data if needed
+    // localStorage.removeItem("questionsAsked");
+
+    // Fetch questions from LocalStorage
+    const questionsAsked = JSON.parse(localStorage.getItem("questionsAsked")) || [];
+    const listContainer = document.getElementById("questionsList");
+
+    if (questionsAsked.length === 0) {
+      listContainer.innerHTML = `<p class="text-gray-400 text-center py-10">You haven't asked any questions yet.</p>`;
+    }
+
+    questionsAsked.forEach(q => {
+      const card = document.createElement("div");
+      card.className = "bg-white p-4 rounded-xl shadow hover:bg-gray-50 transition";
+      card.innerHTML = `
+        <p class="font-semibold">${q.title}</p>
+        <p class="text-sm text-gray-500">${q.description}</p>
+        <p class="text-xs text-gray-400 mt-1">Asked on: ${q.date}</p>
+      `;
+      listContainer.appendChild(card);
+    });
+
+    lucide.createIcons();
+  </script>
+
+</body>
+</html>

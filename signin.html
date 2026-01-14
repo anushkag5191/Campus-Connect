@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Campus Connect</title>
+
+<style>
+    * { box-sizing: border-box; font-family: "Segoe UI", Arial, sans-serif; }
+    body {
+        margin: 0;
+        height: 100vh;
+        background: linear-gradient(135deg, #5f4dee, #8b6cf6);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .card {
+        background: #ffffff;
+        width: 520px;
+        padding: 35px 40px;
+        border-radius: 18px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        text-align: center;
+    }
+    .logo {
+        width: 55px;
+        height: 55px;
+        background: linear-gradient(135deg, #5f4dee, #8b6cf6);
+        border-radius: 12px;
+        margin: 0 auto 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        color: #fff;
+    }
+    h2 { margin: 10px 0 5px; font-size: 24px; color: #222; }
+    .subtitle { font-size: 14px; color: #777; margin-bottom: 25px; }
+    .row { display: flex; gap: 15px; }
+    .form-group { text-align: left; margin-bottom: 15px; flex: 1; }
+    .form-group label { display: block; font-size: 13px; color: #555; margin-bottom: 6px; }
+    .form-group input, .form-group select {
+        width: 100%; padding: 11px 12px; border-radius: 8px;
+        border: 1px solid #ddd; font-size: 14px; outline: none;
+    }
+    .form-group input:focus, .form-group select:focus { border-color: #6a5cf5; }
+    .error { color: red; font-size: 13px; margin-top: 5px; display: none; }
+    .btn {
+        margin-top: 15px;
+        width: 100%;
+        padding: 13px;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #5f4dee, #8b6cf6);
+        color: #fff;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+    .footer-text { margin-top: 18px; font-size: 14px; color: #777; }
+    .footer-text a { color: #6a5cf5; text-decoration: none; font-weight: 600; }
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <div class="logo">👥</div>
+    <h2>Campus Connect</h2>
+    <p class="subtitle">Connect with seniors & peers</p>
+
+    <form id="registerForm">
+
+        <div class="row">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="username" placeholder="Enter username" required>
+            </div>
+            <div class="form-group">
+                <label>User ID</label>
+                <input type="text" id="userid" placeholder="Enter unique user ID" required>
+                <div class="error" id="idError">User ID already exists</div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label>Email ID</label>
+                <input type="email" id="email" placeholder="Enter mail" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Enter password" required>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label>Confirm Password</label>
+                <input type="password" id="confirmPassword" placeholder="Enter password" required>
+                <div class="error" id="passError">Passwords do not match</div>
+            </div>
+            <div class="form-group">
+                <label>Year of Admission</label>
+                <input type="number" id="admissionYear" placeholder="e.g. 2023" required>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label>Course</label>
+                <select id="courseSelect" required>
+                    <option value="">Select course</option>
+                    <option>B.Tech</option>
+                    <option>M.Tech</option>
+                    <option>MCA</option>
+                    <option>BCA</option>
+                    <option>MSc</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Branch</label>
+                <select  id="branchSelect" required>
+                    <option value="">Select branch</option>
+                    <option>CS</option>
+                    <option>CS-AI</option>
+                    <option>IT</option>
+                    <option>DS</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="btn" type="submit">Register</button>
+    </form>
+
+    <div class="footer-text">
+        Already have an account?
+        <a href="login.html">Login</a>
+    </div>
+</div>
+
+<script>
+const form = document.getElementById("registerForm");
+const userIdInput = document.getElementById("userid");
+const passwordInput = document.getElementById("password");
+const confirmInput = document.getElementById("confirmPassword");
+const idError = document.getElementById("idError");
+const passError = document.getElementById("passError");
+
+form.addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const username = document.getElementById("username").value.trim();
+    const userId = userIdInput.value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = passwordInput.value;
+    const confirmPassword = confirmInput.value;
+    const admissionYear = document.getElementById("admissionYear").value.trim();
+    const course = document.getElementById("courseSelect").value;
+    const branch = document.getElementById("branchSelect").value;
+
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+
+    // Check unique userId
+    if (users.some(u => u.userId === userId)) {
+        idError.style.display = "block";
+        return;
+    } else {
+        idError.style.display = "none";
+    }
+
+    // Check password match
+    if (password !== confirmPassword) {
+        passError.style.display = "block";
+        return;
+    } else {
+        passError.style.display = "none";
+    }
+
+    // Save full user object
+    users.push({ username, userId, email, password, admissionYear, course, branch });
+    localStorage.setItem("users", JSON.stringify(users));
+
+    // Save logged-in user info
+    localStorage.setItem("campusUser", username);
+    localStorage.setItem("email", email);
+    localStorage.setItem("admissionYear", admissionYear);
+    localStorage.setItem("course", course);
+    localStorage.setItem("branch", branch);
+
+    // Redirect
+    window.location.href = "dashboard.html";
+});
+</script>
+
+</body>
+</html>

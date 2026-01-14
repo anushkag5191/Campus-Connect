@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connections Made</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+  <!-- Header -->
+  <header class="bg-white shadow p-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold">Connections Made</h1>
+    <a href="dashboard.html" class="text-blue-600 hover:underline">Back to Dashboard</a>
+  </header>
+
+  <!-- List -->
+  <main class="max-w-3xl mx-auto mt-6">
+    <div id="connectionsList" class="space-y-4">
+      <!-- Cards will appear here -->
+    </div>
+  </main>
+
+  <script>
+    // Clear old sample data if needed
+    // localStorage.removeItem("connectionsMade");
+
+    // Fetch connections from LocalStorage
+    const connectionsMade = JSON.parse(localStorage.getItem("connectionsMade")) || [];
+    const listContainer = document.getElementById("connectionsList");
+
+    if (connectionsMade.length === 0) {
+      listContainer.innerHTML = `<p class="text-gray-400 text-center py-10">You haven't made any connections yet.</p>`;
+    }
+
+    connectionsMade.forEach(person => {
+      const card = document.createElement("div");
+      card.className = "bg-white p-4 rounded-xl shadow flex items-center gap-4 hover:bg-gray-50 transition";
+      card.innerHTML = `
+        <img src="${person.avatar}" class="w-12 h-12 rounded-full" alt="${person.name}">
+        <div>
+          <p class="font-semibold">${person.name}</p>
+          <p class="text-sm text-gray-500">${person.title}</p>
+        </div>
+        <button class="ml-auto px-3 py-1 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">Message</button>
+      `;
+      listContainer.appendChild(card);
+    });
+
+    lucide.createIcons();
+  </script>
+
+</body>
+
+</html>

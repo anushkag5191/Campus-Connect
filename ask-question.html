@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Campus Connect | Ask Question</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="min-h-screen bg-gray-50">
+
+<!-- HEADER -->
+<header class="bg-white border-b sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+    <h1 class="text-xl font-bold">Ask a Question</h1>
+    <a href="dashboard.html" class="text-sm text-blue-600">← Back to Dashboard</a>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="max-w-3xl mx-auto px-4 py-10">
+
+  <div class="bg-white rounded-xl shadow p-6 space-y-5">
+
+    <div>
+      <label class="block text-sm font-medium mb-1">Question Title</label>
+      <input id="title"
+        type="text"
+        placeholder="e.g. How to prepare for GATE CS?"
+        class="w-full border rounded-lg px-4 py-2"/>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium mb-1">Description</label>
+      <textarea id="description"
+        rows="5"
+        placeholder="Explain your question in detail..."
+        class="w-full border rounded-lg px-4 py-2"></textarea>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium mb-1">Category</label>
+      <select id="category" class="w-full border rounded-lg px-4 py-2">
+        <option>GATE</option>
+        <option>Placements</option>
+        <option>Internships</option>
+        <option>Higher Studies</option>
+      </select>
+    </div>
+
+    <button onclick="submitQuestion()"
+      class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
+      Submit Question
+    </button>
+
+  </div>
+</main>
+
+<script>
+lucide.createIcons();
+
+function submitQuestion() {
+  const title = document.getElementById("title").value.trim();
+  const description = document.getElementById("description").value.trim();
+  const category = document.getElementById("category").value;
+
+  if (!title || !description) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  const questions = JSON.parse(localStorage.getItem("questionsAsked")) || [];
+
+  questions.push({
+    id: Date.now(),
+    title,
+    description,
+    category,
+    createdAt: new Date().toISOString()
+  });
+
+  localStorage.setItem("questionsAsked", JSON.stringify(questions));
+
+  alert("Question posted successfully!");
+  window.location.href = "dashboard.html";
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Campus Connect | Find Mentors</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="min-h-screen bg-gray-50">
+
+<!-- HEADER -->
+<header class="bg-white border-b sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+    <h1 class="text-xl font-bold">Find Senior Mentors</h1>
+    <a href="dashboard.html" class="text-sm text-blue-600">← Back to Dashboard</a>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="max-w-7xl mx-auto px-4 py-8">
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="mentorGrid"></div>
+
+</main>
+
+<script>
+lucide.createIcons();
+
+const mentors = [
+  { id: 101, name: "Amit Sharma", branch: "CSE", expertise: "GATE Topper" },
+  { id: 102, name: "Priya Verma", branch: "ECE", expertise: "Placements" },
+  { id: 103, name: "Rahul Jain", branch: "ME", expertise: "IES Qualified" }
+];
+
+let connections = JSON.parse(localStorage.getItem("connections")) || [];
+
+function getStatus(id) {
+  const c = connections.find(c => c.id === id);
+  return c ? c.status : "none";
+}
+
+function renderMentors() {
+  const grid = document.getElementById("mentorGrid");
+  grid.innerHTML = "";
+
+  mentors.forEach(m => {
+    let btn = "";
+    const status = getStatus(m.id);
+
+    if (status === "none") {
+      btn = `<button onclick="connect(${m.id})"
+        class="w-full bg-blue-600 text-white py-2 rounded-lg">Connect</button>`;
+    }
+    if (status === "pending") {
+      btn = `<button disabled class="w-full bg-gray-200 py-2 rounded-lg">Pending</button>`;
+    }
+    if (status === "connected") {
+      btn = `<button onclick="chat(${m.id})"
+        class="w-full bg-green-600 text-white py-2 rounded-lg">Chat</button>`;
+    }
+
+    grid.innerHTML += `
+      <div class="bg-white rounded-xl shadow p-5">
+        <div class="font-semibold">${m.name}</div>
+        <p class="text-xs text-gray-500 mb-4">
+          ${m.branch} • ${m.expertise}
+        </p>
+        ${btn}
+      </div>
+    `;
+  });
+}
+
+function connect(id) {
+  connections.push({ id, status: "pending" });
+  localStorage.setItem("connections", JSON.stringify(connections));
+  renderMentors();
+
+  // demo auto accept
+  setTimeout(() => {
+    connections = connections.map(c =>
+      c.id === id ? { ...c, status: "connected" } : c
+    );
+    localStorage.setItem("connections", JSON.stringify(connections));
+    renderMentors();
+  }, 1500);
+}
+
+function chat(id) {
+  localStorage.setItem("activeChatId", id);
+  window.location.href = "chat.html";
+}
+
+renderMentors();
+</script>
+
+</body>
+</html>
