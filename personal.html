@@ -126,17 +126,17 @@ textarea {
 
     <div class="field">
       <label>Contact No</label>
-      <input id="phone" placeholder="Enter contact number">
+      <input id="phone_number" placeholder="Enter contact number">
     </div>
 
     <div class="field">
       <label>Alternate Contact No</label>
-      <input id="alt_phone" placeholder="Enter alternate contact number">
+      <input id="alternate_phone" placeholder="Enter alternate contact number">
     </div>
 
     <div class="field">
       <label>Email ID</label>
-      <input type="email" id="email" placeholder="Enter email address">
+      <input type="email" id="email_id" placeholder="Enter email address">
     </div>
 
     <div class="field">
@@ -171,7 +171,9 @@ textarea {
 </div>
 
 <script>
-const userId = 1;
+const userId = localStorage.getItem("campusUser");
+if (!userId) window.top.location.href = "login.html";
+
 
 document.getElementById("saveBtn").addEventListener("click", savePersonal);
 
@@ -217,14 +219,9 @@ async function savePersonal() {
         bio: document.getElementById("bio").value,
         dob: document.getElementById("dob").value,
         gender: document.getElementById("gender").value,
-        phone: document.getElementById("phone").value,
-        alt_phone: document.getElementById("alt_phone").value,
-        email: document.getElementById("email").value,
-        address: document.getElementById("address").value,
-        pincode: document.getElementById("pincode").value,
-        city: document.getElementById("city").value,
-        state: document.getElementById("state").value,
-        country: document.getElementById("country").value
+        phone_number: document.getElementById("phone_number").value,
+        alternate_phone: document.getElementById("alternate_phone").value,
+        email_id: document.getElementById("email_id").value
     };
 
     try {
@@ -241,9 +238,29 @@ async function savePersonal() {
         showMessage("Error saving profile", "error");
     }
 }
+async function loadProfile() {
+    try {
+        const response = await fetch(`http://localhost:3000/users/${userId}`);
+        if (!response.ok) return;
 
-loadProfile();
+        const user = await response.json();
+
+        document.getElementById("first_name").value = user.first_name || "";
+        document.getElementById("last_name").value = user.last_name || "";
+        document.getElementById("bio").value = user.bio || "";
+        document.getElementById("dob").value = user.dob || "";
+        document.getElementById("gender").value = user.gender || "";
+        document.getElementById("phone_number").value = user.phone_number || "";
+        document.getElementById("alternate_phone").value = user.alternate_phone || "";
+        document.getElementById("email_id").value = user.email_id || "";
+
+    } catch {
+        // silent
+    }
+}
+
 </script>
 
 </body>
 </html>
+
