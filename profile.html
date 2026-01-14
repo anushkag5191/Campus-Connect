@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>My Profile</title>
+<title>My Profile | Campus Connect</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
@@ -19,83 +18,99 @@ body {
 
 <body>
 
-<div class="p-4 md:p-8">
-  <div class="max-w-4xl mx-auto">
+<div class="max-w-5xl mx-auto">
 
-    <!-- HEADER -->
-    <div class="flex justify-between items-center mb-8">
+  <!-- HEADER -->
+  <div class="flex justify-between items-center mb-8">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900">My Profile</h1>
+      <p class="text-gray-600 mt-1">Manage your personal and academic information</p>
+    </div>
+    <button id="saveBtn"
+      class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-semibold">
+      💾 Save Changes
+    </button>
+  </div>
+
+  <!-- PROFILE CARD -->
+  <div class="bg-white rounded-xl shadow mb-8">
+    <div class="p-8 flex items-center gap-6">
+
+      <div class="w-24 h-24 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center">
+        <span class="text-white text-3xl">👤</span>
+      </div>
+
       <div>
-        <h1 class="text-3xl font-bold text-gray-900">My Profile</h1>
-        <p class="text-gray-600 mt-1">Manage your profile and career information</p>
-      </div>
-      <button id="saveBtn"
-        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
-        💾 Save Changes
-      </button>
-    </div>
-
-    <!-- PROFILE CARD -->
-    <div class="bg-white rounded-xl shadow mb-8">
-      <div class="p-8 flex flex-col md:flex-row items-center gap-6">
-
-        <!-- Avatar -->
-        <div class="w-24 h-24 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center">
-          <span class="text-white text-3xl">👤</span>
-        </div>
-
-        <!-- User Info -->
-        <div class="text-center md:text-left">
-          <h2 id="profileName" class="text-2xl font-bold text-gray-900">Loading...</h2>
-          <p id="profileBranch" class="text-gray-600 mt-1">Branch</p>
-          <p id="profileYear" class="text-gray-600">Year of Admission</p>
-          <p id="profileEmail" class="text-sm text-gray-500 mt-1">Email</p>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- TABS -->
-    <div class="bg-white rounded-xl shadow p-6">
-
-      <div class="grid grid-cols-4 mb-6 text-center border rounded-lg overflow-hidden">
-        <button class="tab-btn py-2 bg-blue-600 text-white" data-src="personal.html">Personal</button>
-        <button class="tab-btn py-2 bg-gray-100" data-src="academic.html">Academic</button>
-        <button class="tab-btn py-2 bg-gray-100" data-src="career.html">Career</button>
-        <button class="tab-btn py-2 bg-gray-100" data-src="skills.html">Skills</button>
+        <h2 id="profileName" class="text-2xl font-bold text-gray-900">Student</h2>
+        <p id="profileBranch" class="text-gray-600">Branch</p>
+        <p id="profileYear" class="text-gray-600">Year of Admission</p>
+        <p id="profileEmail" class="text-sm text-gray-500 mt-1">Email</p>
       </div>
 
-      <iframe id="tabContent"
-        src="personal.html"
-        class="w-full h-[600px] border-0 rounded-xl"></iframe>
-
     </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="bg-white rounded-xl shadow p-6">
+
+    <div class="grid grid-cols-4 mb-6 text-center border rounded-lg overflow-hidden">
+      <button class="tab-btn py-2 bg-blue-600 text-white" data-src="personal.html">Personal</button>
+      <button class="tab-btn py-2 bg-gray-100" data-src="academic.html">Academic</button>
+      <button class="tab-btn py-2 bg-gray-100" data-src="career.html">Career</button>
+      <button class="tab-btn py-2 bg-gray-100" data-src="skills.html">Skills</button>
+    </div>
+
+    <iframe id="tabContent"
+      src="personal.html"
+      class="w-full h-[650px] border-0 rounded-xl"></iframe>
 
   </div>
+
 </div>
+
 <script>
-/* ---------------- AUTH CHECK ---------------- */
+/* ---------- AUTH CHECK ---------- */
 const userId = localStorage.getItem("campusUser");
 if (!userId) {
   alert("Please login first");
   window.location.href = "login.html";
 }
 
-/* ---------------- LOAD PROFILE FROM LOCAL STORAGE ---------------- */
+/* ---------- LOAD HEADER INFO ---------- */
 document.getElementById("profileName").innerText =
-  localStorage.getItem("campusUser");   // username
+  localStorage.getItem("campusUser") || "Student";
 
 document.getElementById("profileBranch").innerText =
-  `${localStorage.getItem("course")} - ${localStorage.getItem("branch")}`;
+  `${localStorage.getItem("course") || ""} ${localStorage.getItem("branch") || ""}`;
 
 document.getElementById("profileYear").innerText =
-  `Year of Admission: ${localStorage.getItem("admissionYear")}`;
+  `Year of Admission: ${localStorage.getItem("admissionYear") || ""}`;
 
 document.getElementById("profileEmail").innerText =
-  localStorage.getItem("email");
-</script>
+  localStorage.getItem("email") || "";
 
+/* ---------- TAB SWITCH ---------- */
+const tabs = document.querySelectorAll(".tab-btn");
+const iframe = document.getElementById("tabContent");
+
+tabs.forEach(tab => {
+  tab.addEventListener("click", () => {
+    tabs.forEach(t => t.classList.remove("bg-blue-600", "text-white"));
+    tab.classList.add("bg-blue-600", "text-white");
+    iframe.src = tab.dataset.src;
+  });
+});
+
+/* ---------- SAVE BUTTON ---------- */
+document.getElementById("saveBtn").addEventListener("click", () => {
+  if (iframe.contentWindow.saveFromParent) {
+    iframe.contentWindow.saveFromParent();
+  } else {
+    alert("Nothing to save on this tab");
+  }
+});
+</script>
 
 </body>
 </html>
-
 
