@@ -38,15 +38,17 @@ body {
     <div class="bg-white rounded-xl shadow mb-8">
       <div class="p-8 flex flex-col md:flex-row items-center gap-6">
 
+        <!-- Avatar -->
         <div class="w-24 h-24 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center">
           <span class="text-white text-3xl">👤</span>
         </div>
 
+        <!-- User Info -->
         <div class="text-center md:text-left">
-          <h2 id="profileName" class="text-2xl font-bold text-gray-900">Student Name</h2>
-          <p id="profileCourseBranch" class="text-gray-600 mt-1">Course - Branch</p>
-          <p id="profileYear" class="text-gray-600">Class of Year</p>
-          <p id="profileEmail" class="text-sm text-gray-500 mt-1">youremail@example.com</p>
+          <h2 id="profileName" class="text-2xl font-bold text-gray-900">Loading...</h2>
+          <p id="profileBranch" class="text-gray-600 mt-1">Branch</p>
+          <p id="profileYear" class="text-gray-600">Year of Admission</p>
+          <p id="profileEmail" class="text-sm text-gray-500 mt-1">Email</p>
         </div>
 
       </div>
@@ -62,7 +64,8 @@ body {
         <button class="tab-btn py-2 bg-gray-100" data-src="skills.html">Skills</button>
       </div>
 
-      <iframe id="tabContent" src="personal.html"
+      <iframe id="tabContent"
+        src="personal.html"
         class="w-full h-[600px] border-0 rounded-xl"></iframe>
 
     </div>
@@ -71,34 +74,56 @@ body {
 </div>
 
 <script>
+/* ---------------- AUTH CHECK ---------------- */
+const userId = localStorage.getItem("campusUser");
+if (!userId) {
+  window.location.href = "login.html";
+}
+
 /* ---------------- TAB SWITCHING ---------------- */
-const tabs = document.querySelectorAll('.tab-btn');
-const iframe = document.getElementById('tabContent');
+const tabs = document.querySelectorAll(".tab-btn");
+const iframe = document.getElementById("tabContent");
 
 tabs.forEach(tab => {
-  tab.addEventListener('click', () => {
+  tab.addEventListener("click", () => {
     tabs.forEach(t => {
-      t.classList.remove('bg-blue-600','text-white');
-      t.classList.add('bg-gray-100');
+      t.classList.remove("bg-blue-600", "text-white");
+      t.classList.add("bg-gray-100");
     });
 
-    tab.classList.add('bg-blue-600','text-white');
-    tab.classList.remove('bg-gray-100');
+    tab.classList.add("bg-blue-600", "text-white");
+    tab.classList.remove("bg-gray-100");
 
-    iframe.src = tab.getAttribute('data-src');
+    iframe.src = tab.dataset.src;
   });
 });
 
-/* ---------------- AUTH CHECK ---------------- */
-const userId = localStorage.getItem("campusUser");
-if (!userId) window.location.href = "login.html";
+/* ---------------- LOAD USER PROFILE ---------------- */
+async function loadUserProfile() {
+  try {
+    const res = await fetch(
+      `http://localhost:3000/get-user-profile/${userId}`
+    );
+    const data = await res.json();
 
-/* ---------------- SAVE PROFILE ---------------- */
+    document.getElementById("profileName").innerText = data.username;
+    document.getElementById("profileBranch").innerText = `Branch: ${data.branch}`;
+    document.getElementById("profileYear").innerText =
+      `Year of Admission: ${data.yearOfAdmission}`;
+    document.getElementById("profileEmail").innerText = data.email;
+
+  } catch (err) {
+    console.error("Error loading user profile", err);
+  }
+}
+
+loadUserProfile();
+
+/* ---------------- SAVE PROFILE (PERSONAL TAB) ---------------- */
 document.getElementById("saveBtn").addEventListener("click", async () => {
 
   const doc = iframe.contentWindow.document;
 
-  // Read values from personal.html
   const data = {
     userId,
     firstName: doc.getElementById("firstName")?.value,
