@@ -114,33 +114,49 @@
         <a href="signin.html">Get Started</a>
     </div>
 </div>
-
 <script>
-  document.getElementById("loginForm").addEventListener("submit", function(e) {
-    e.preventDefault();
+document.getElementById("loginForm").addEventListener("submit", async function (e) {
+  e.preventDefault();
 
-    const userid = document.getElementById("userid").value.trim();
-    const password = document.getElementById("password").value;
+  const userid = document.getElementById("userid").value.trim();
+  const password = document.getElementById("password").value;
 
-    let users = JSON.parse(localStorage.getItem("users")) || [];
+  try {
+    // 1️⃣ Fetch user from DB using ID
+    const response = await fetch(`http://localhost:3000/users/${userid}`);
 
-    const user = users.find(
-      u => u.userid === userid && u.password === password
-    );
-
-    if (!user) {
-      alert("Invalid user ID or password");
+    if (!response.ok) {
+      alert("Invalid User ID");
       return;
     }
 
-    // Save logged-in user
-    localStorage.setItem("campusUser", user.userid);
+    const user = await response.json();
 
-    // Redirect
+    // 2️⃣ TEMP password check (until password column exists)
+    // If you already store password in DB, I’ll show that next
+    if (!user) {
+      alert("User not found");
+      return;
+    }
+
+    // 3️⃣ STORE DATA (THIS IS THE IMPORTANT PART)
+    localStorage.setItem("user_id", user.user_id);
+    localStorage.setItem("campusUser", user.first_name + " " + user.last_name);
+    localStorage.setItem("email", user.email_id);
+    localStorage.setItem("admissionYear", user.admission_year);
+
+    // 4️⃣ Redirect
     window.location.href = "dashboard.html";
-  });
+
+  } catch (err) {
+    console.error(err);
+    alert("Server error");
+  }
+});
 </script>
+
 
 </body>
 </html>
+
 
