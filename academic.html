@@ -3,76 +3,88 @@
 <head>
 <meta charset="UTF-8">
 <title>Campus Connect – Academic</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 * { box-sizing: border-box; font-family: "Segoe UI", Arial, sans-serif; }
-body { margin: 0; background: #f5f7fb; }
+body { margin: 0; background: transparent; }
 
 .card {
-    max-width: 750px;
-    margin: 40px auto;
-    background: #ffffff;
-    padding: 30px 40px;
-    border-radius: 14px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  max-width: 750px;
+  margin: 20px auto;
+  background: #ffffff;
+  padding: 30px 40px;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
 }
 
 h2 { margin-bottom: 25px; color: #222; }
 h3 { margin-bottom: 15px; color: #333; }
 h4 { margin-bottom: 10px; color: #444; }
 
-.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-
-label { font-size: 14px; color: #555; margin-bottom: 6px; display: block; }
-input, select, textarea {
-    width: 100%;
-    padding: 10px 12px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    font-size: 14px;
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
 }
+
+label {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 6px;
+  display: block;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+
 textarea { resize: none; height: 80px; }
 input:focus, select:focus, textarea:focus { border-color: #4f46e5; }
 
 .section { margin-top: 35px; }
 
 .item-box {
-    border: 1px solid #e5e7eb;
-    padding: 20px;
-    border-radius: 12px;
-    margin-bottom: 15px;
-    background: #fafafa;
-    position: relative;
+  border: 1px solid #e5e7eb;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  background: #fafafa;
+  position: relative;
 }
 
 .delete-btn {
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    font-size: 18px;
-    cursor: pointer;
-    color: #dc2626; /* RED dustbin */
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  cursor: pointer;
+  color: #dc2626;
+  font-size: 18px;
 }
 
 .add-btn {
-    background: none;
-    border: none;
-    color: #4f46e5;
-    font-weight: 600;
-    cursor: pointer;
-    margin-bottom: 15px;
+  background: none;
+  border: none;
+  color: #4f46e5;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 15px;
 }
 
 .save-btn {
-    margin-top: 40px;
-    width: 100%;
-    padding: 14px;
-    background: #4f46e5;
-    color: #fff;
-    border: none;
-    border-radius: 12px;
-    font-size: 16px;
-    cursor: pointer;
+  margin-top: 40px;
+  width: 100%;
+  padding: 14px;
+  background: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
 }
 </style>
 </head>
@@ -86,33 +98,33 @@ input:focus, select:focus, textarea:focus { border-color: #4f46e5; }
 <div class="section">
 <h3>Basic Details</h3>
 <div class="grid">
-    <div>
-        <label>Course</label>
-        <select>
-            <option value="">Select course</option>
-            <option>B.Tech</option>
-            <option>M.Tech</option>
-            <option>BCA</option>
-            <option>MCA</option>
-            <option>MSc</option>
-        </select>
-    </div>
+  <div>
+    <label>Course</label>
+    <select id="course">
+      <option value="">Select course</option>
+      <option>B.Tech</option>
+      <option>M.Tech</option>
+      <option>BCA</option>
+      <option>MCA</option>
+      <option>MSc</option>
+    </select>
+  </div>
 
-    <div>
-        <label>Branch / Department</label>
-        <select>
-            <option value="">Select branch</option>
-            <option>CS</option>
-            <option>CS-AI</option>
-            <option>DS</option>
-            <option>IT</option>
-        </select>
-    </div>
+  <div>
+    <label>Branch / Department</label>
+    <select id="branch">
+      <option value="">Select branch</option>
+      <option>CS</option>
+      <option>CS-AI</option>
+      <option>DS</option>
+      <option>IT</option>
+    </select>
+  </div>
 
-    <div>
-        <label>Year of Admission</label>
-        <input type="number" placeholder="e.g. 2023">
-    </div>
+  <div>
+    <label>Year of Admission</label>
+    <input type="number" id="admissionYear" placeholder="e.g. 2023">
+  </div>
 </div>
 </div>
 
@@ -130,73 +142,117 @@ input:focus, select:focus, textarea:focus { border-color: #4f46e5; }
 <div id="projects"></div>
 </div>
 
-<button class="save-btn">Save</button>
+<button class="save-btn" onclick="saveAcademic()">Save</button>
 </div>
 
 <script>
 function updateTitles(container, title) {
-    [...container.children].forEach((box, i) => {
-        box.querySelector("h4").innerText = `${title} ${i + 1}`;
+  [...container.children].forEach((box, i) => {
+    box.querySelector("h4").innerText = `${title} ${i + 1}`;
+  });
+}
+
+/* ---------- ADD INTERNSHIP ---------- */
+function addInternship(data = {}) {
+  const container = internships;
+  const div = document.createElement("div");
+  div.className = "item-box";
+  div.innerHTML = `
+    <span class="delete-btn" onclick="this.parentElement.remove(); updateTitles(internships,'Internship')">🗑️</span>
+    <h4></h4>
+    <div class="grid">
+      <div><label>Company Name</label><input class="company"></div>
+      <div><label>Role</label><input class="role"></div>
+      <div><label>Duration</label><input class="duration"></div>
+      <div><label>Location</label><input class="location"></div>
+    </div>
+    <label>Responsibilities</label>
+    <textarea class="responsibilities"></textarea>
+  `;
+  container.appendChild(div);
+
+  div.querySelector(".company").value = data.company || "";
+  div.querySelector(".role").value = data.role || "";
+  div.querySelector(".duration").value = data.duration || "";
+  div.querySelector(".location").value = data.location || "";
+  div.querySelector(".responsibilities").value = data.responsibilities || "";
+
+  updateTitles(container, "Internship");
+}
+
+/* ---------- ADD PROJECT ---------- */
+function addProject(data = {}) {
+  const container = projects;
+  const div = document.createElement("div");
+  div.className = "item-box";
+  div.innerHTML = `
+    <span class="delete-btn" onclick="this.parentElement.remove(); updateTitles(projects,'Project')">🗑️</span>
+    <h4></h4>
+    <label>Project Name</label><input class="name">
+    <label>GitHub Repository</label><input class="github">
+    <label>Description</label><textarea class="description"></textarea>
+    <label>Technology Used</label><input class="tech">
+  `;
+  container.appendChild(div);
+
+  div.querySelector(".name").value = data.name || "";
+  div.querySelector(".github").value = data.github || "";
+  div.querySelector(".description").value = data.description || "";
+  div.querySelector(".tech").value = data.tech || "";
+
+  updateTitles(container, "Project");
+}
+
+/* ---------- SAVE ---------- */
+function saveAcademic() {
+  const data = {
+    course: course.value,
+    branch: branch.value,
+    admissionYear: admissionYear.value,
+    internships: [],
+    projects: []
+  };
+
+  document.querySelectorAll("#internships .item-box").forEach(box => {
+    data.internships.push({
+      company: box.querySelector(".company").value,
+      role: box.querySelector(".role").value,
+      duration: box.querySelector(".duration").value,
+      location: box.querySelector(".location").value,
+      responsibilities: box.querySelector(".responsibilities").value
     });
+  });
+
+  document.querySelectorAll("#projects .item-box").forEach(box => {
+    data.projects.push({
+      name: box.querySelector(".name").value,
+      github: box.querySelector(".github").value,
+      description: box.querySelector(".description").value,
+      tech: box.querySelector(".tech").value
+    });
+  });
+
+  localStorage.setItem("campusAcademic", JSON.stringify(data));
+  alert("Academic details saved!");
 }
 
-/* ADD INTERNSHIP */
-function addInternship() {
-    const container = document.getElementById("internships");
-    const div = document.createElement("div");
-    div.className = "item-box";
-    div.innerHTML = `
-        <span class="delete-btn" onclick="this.parentElement.remove(); updateTitles(container,'Internship')">🗑️</span>
-        <h4></h4>
-        <div class="grid">
-            <div>
-                <label>Company Name</label>
-                <input type="text" placeholder="Company name">
-            </div>
-            <div>
-                <label>Role</label>
-                <input type="text" placeholder="Intern role">
-            </div>
-            <div>
-                <label>Duration</label>
-                <input type="text" placeholder="e.g. May 2024 - July 2024">
-            </div>
-            <div>
-                <label>Location</label>
-                <input type="text" placeholder="Company location">
-            </div>
-        </div>
-        <label>Responsibilities</label>
-        <textarea placeholder="Brief description of your work"></textarea>
-    `;
-    container.appendChild(div);
-    updateTitles(container, "Internship");
+/* ---------- LOAD ---------- */
+function loadAcademic() {
+  const data = JSON.parse(localStorage.getItem("campusAcademic") || "{}");
+
+  course.value = data.course || "";
+  branch.value = data.branch || "";
+  admissionYear.value = data.admissionYear || "";
+
+  (data.internships || []).forEach(addInternship);
+  (data.projects || []).forEach(addProject);
 }
 
-/* ADD PROJECT */
-function addProject() {
-    const container = document.getElementById("projects");
-    const div = document.createElement("div");
-    div.className = "item-box";
-    div.innerHTML = `
-        <span class="delete-btn" onclick="this.parentElement.remove(); updateTitles(container,'Project')">🗑️</span>
-        <h4></h4>
+/* ---------- EXPOSE TO PARENT ---------- */
+window.saveFromParent = saveAcademic;
 
-        <label>Project Name</label>
-        <input type="text" placeholder="Project name">
-
-        <label>GitHub Repository Link</label>
-        <input type="url" placeholder="https://github.com/your-username/project-repo">
-
-        <label>Description</label>
-        <textarea placeholder="Brief description of the project"></textarea>
-
-        <label>Technology Used</label>
-        <input type="text" placeholder="e.g. React, Node.js, MongoDB">
-    `;
-    container.appendChild(div);
-    updateTitles(container, "Project");
-}
+/* ---------- INIT ---------- */
+window.onload = loadAcademic;
 </script>
 
 </body>
