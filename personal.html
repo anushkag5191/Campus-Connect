@@ -171,7 +171,8 @@ textarea {
 </div>
 
 <script>
-const userId = 1;
+const userId = localStorage.getItem("campusUser");
+
 
 document.getElementById("saveBtn").addEventListener("click", savePersonal);
 
@@ -243,7 +244,12 @@ async function savePersonal() {
 }
 
 loadProfile();
+    window.saveFromParent = function () {
+    savePersonal();
+};
+
 </script>
 
 </body>
 </html>
+
