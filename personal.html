@@ -106,7 +106,7 @@ textarea {
 
     <div class="field">
       <label>Bio</label>
-      <textarea id="bio" placeholder="Write a short bio about yourself"></textarea>
+      <textarea id="bio" placeholder="Write a short bio"></textarea>
     </div>
 
     <div class="field">
@@ -139,31 +139,6 @@ textarea {
       <input type="email" id="email" placeholder="Enter email address">
     </div>
 
-    <div class="field">
-      <label>Address</label>
-      <textarea id="address" placeholder="Enter your full address"></textarea>
-    </div>
-
-    <div class="field">
-      <label>Pincode</label>
-      <input id="pincode" placeholder="Enter pincode">
-    </div>
-
-    <div class="field">
-      <label>City</label>
-      <input id="city" placeholder="Enter city">
-    </div>
-
-    <div class="field">
-      <label>State</label>
-      <input id="state" placeholder="Enter state">
-    </div>
-
-    <div class="field">
-      <label>Country</label>
-      <input id="country" placeholder="Enter country">
-    </div>
-
     <button class="submit-btn" id="saveBtn">Save</button>
     <div id="message" class="message"></div>
 
@@ -171,11 +146,14 @@ textarea {
 </div>
 
 <script>
+/* =========================
+   USER ID (FROM LOGIN)
+========================= */
 const userId = localStorage.getItem("campusUser");
 
-
-document.getElementById("saveBtn").addEventListener("click", savePersonal);
-
+/* =========================
+   MESSAGE HANDLER
+========================= */
 function showMessage(text, type) {
     const msg = document.getElementById("message");
     msg.innerText = text;
@@ -183,8 +161,12 @@ function showMessage(text, type) {
     msg.style.display = "block";
 }
 
-// Load profile silently
+/* =========================
+   LOAD PROFILE
+========================= */
 async function loadProfile() {
+    if (!userId) return;
+
     try {
         const response = await fetch(`http://localhost:3000/users/${userId}`);
         if (!response.ok) return;
@@ -194,38 +176,35 @@ async function loadProfile() {
         document.getElementById("first_name").value = user.first_name || "";
         document.getElementById("last_name").value = user.last_name || "";
         document.getElementById("bio").value = user.bio || "";
-        document.getElementById("dob").value = user.dob || "";
+        document.getElementById("dob").value = user.dob ? user.dob.split("T")[0] : "";
         document.getElementById("gender").value = user.gender || "";
-        document.getElementById("phone").value = user.phone || "";
-        document.getElementById("alt_phone").value = user.alt_phone || "";
-        document.getElementById("email").value = user.email || "";
-        document.getElementById("address").value = user.address || "";
-        document.getElementById("pincode").value = user.pincode || "";
-        document.getElementById("city").value = user.city || "";
-        document.getElementById("state").value = user.state || "";
-        document.getElementById("country").value = user.country || "";
+        document.getElementById("phone").value = user.phone_number || "";
+        document.getElementById("alt_phone").value = user.alternate_phone || "";
+        document.getElementById("email").value = user.email_id || "";
 
-    } catch {
-        // silent
+    } catch (err) {
+        console.error(err);
     }
 }
 
-// Save profile
+/* =========================
+   SAVE PROFILE
+========================= */
 async function savePersonal() {
+    if (!userId) {
+        showMessage("User not logged in", "error");
+        return;
+    }
+
     const data = {
         first_name: document.getElementById("first_name").value,
         last_name: document.getElementById("last_name").value,
+        email_id: document.getElementById("email").value,
+        phone_number: document.getElementById("phone").value,
+        alternate_phone: document.getElementById("alt_phone").value,
         bio: document.getElementById("bio").value,
-        dob: document.getElementById("dob").value,
-        gender: document.getElementById("gender").value,
-        phone: document.getElementById("phone").value,
-        alt_phone: document.getElementById("alt_phone").value,
-        email: document.getElementById("email").value,
-        address: document.getElementById("address").value,
-        pincode: document.getElementById("pincode").value,
-        city: document.getElementById("city").value,
-        state: document.getElementById("state").value,
-        country: document.getElementById("country").value
+        dob: document.getElementById("dob").value || null,
+        gender: document.getElementById("gender").value
     };
 
     try {
@@ -236,20 +215,27 @@ async function savePersonal() {
         });
 
         if (!response.ok) throw new Error();
+
         showMessage("Profile saved successfully!", "success");
 
-    } catch {
+    } catch (err) {
+        console.error(err);
         showMessage("Error saving profile", "error");
     }
 }
 
-loadProfile();
-    window.saveFromParent = function () {
+/* =========================
+   EVENTS
+========================= */
+document.getElementById("saveBtn").addEventListener("click", savePersonal);
+
+/* expose to parent iframe */
+window.saveFromParent = function () {
     savePersonal();
 };
 
+loadProfile();
 </script>
 
 </body>
 </html>
-
