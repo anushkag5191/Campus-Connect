@@ -90,19 +90,15 @@ h2 {
 .row {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 6px;
     margin-bottom: 15px;
 }
 
-.field { width: 95%; }
-
 label {
     font-weight: 600;
-    margin-bottom: 5px;
-    display: block;
 }
 
-input, textarea {
+input, textarea, select {
     width: 100%;
     padding: 10px;
     border-radius: 6px;
@@ -155,10 +151,10 @@ textarea {
                 Work Experience 1
                 <span class="delete" onclick="removeBlock(this,'work')">🗑</span>
             </div>
-            <div class="row"><label>Company Name</label><input placeholder="Enter company name"></div>
-            <div class="row"><label>Role</label><input placeholder="Enter your role"></div>
-            <div class="row"><label>Duration</label><input placeholder="e.g. Jan 2023 – Present"></div>
-            <div class="row"><label>Address</label><input placeholder="Enter company address"></div>
+            <div class="row"><label>Company Name</label><input></div>
+            <div class="row"><label>Role</label><input></div>
+            <div class="row"><label>Duration</label><input></div>
+            <div class="row"><label>Address</label><input></div>
         </div>
     </div>
 </div>
@@ -175,11 +171,44 @@ textarea {
                 Project 1
                 <span class="delete" onclick="removeBlock(this,'project')">🗑</span>
             </div>
-            <div class="row"><label>GitHub Link</label><input placeholder="https://github.com/username/project"></div>
-            <div class="row"><label>Project Name</label><input placeholder="Enter project title"></div>
-            <div class="row"><label>Description</label><textarea placeholder="Brief description of the project"></textarea></div>
-            <div class="row"><label>Technologies Used</label><input placeholder="e.g. HTML, CSS, JavaScript"></div>
+            <div class="row"><label>GitHub Link</label><input></div>
+            <div class="row"><label>Project Name</label><input></div>
+            <div class="row"><label>Description</label><textarea></textarea></div>
+            <div class="row"><label>Technologies Used</label><input></div>
         </div>
+    </div>
+</div>
+
+<!-- EXAM PREPARATION -->
+<div class="section-header">
+    <h3>Exam Preparation</h3>
+</div>
+
+<div class="box">
+    <div class="row">
+        <label>Are you preparing for any exam?</label>
+        <select id="examPrep" onchange="handleExamPrep()">
+            <option value="">Select</option>
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+        </select>
+    </div>
+
+    <div class="row" id="examSelectRow" style="display:none;">
+        <label>Select Exam</label>
+        <select id="examType" onchange="handleOtherExam()">
+            <option value="">Select exam</option>
+            <option value="GATE">GATE</option>
+            <option value="CAT">CAT</option>
+            <option value="Army">Army</option>
+            <option value="Civil Services">Civil Services</option>
+            <option value="Other">Other</option>
+        </select>
+    </div>
+
+    <div class="row" id="otherExamRow" style="display:none;">
+        <label>Specify Exam</label>
+        <input id="otherExam">
     </div>
 </div>
 
@@ -217,6 +246,20 @@ function renumber(container, type) {
         box.querySelector(".box-title").childNodes[0].textContent =
             `${type.charAt(0).toUpperCase() + type.slice(1)} ${i + 1}`;
     });
+}
+
+function handleExamPrep() {
+    const prep = document.getElementById("examPrep").value;
+    document.getElementById("examSelectRow").style.display = prep === "yes" ? "block" : "none";
+    document.getElementById("otherExamRow").style.display = "none";
+    document.getElementById("examType").value = "";
+    document.getElementById("otherExam").value = "";
+}
+
+function handleOtherExam() {
+    const exam = document.getElementById("examType").value;
+    document.getElementById("otherExamRow").style.display = exam === "Other" ? "block" : "none";
+    if (exam !== "Other") document.getElementById("otherExam").value = "";
 }
 </script>
 
