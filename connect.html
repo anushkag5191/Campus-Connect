@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Campus Connect | Connect</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="min-h-screen bg-gray-50">
+
+<header class="bg-white border-b sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 h-16 flex items-center gap-4">
+    <a href="dashboard.html" class="font-bold text-xl">Campus Connect</a>
+    <span class="text-sm text-gray-500">| Connect</span>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 py-8">
+
+  <h1 class="text-3xl font-bold mb-2">Connect with Seniors & Peers</h1>
+  <p class="text-gray-500 mb-6">
+    Find mentors based on exam preparation, branch, and experience
+  </p>
+
+  <!-- Search -->
+  <input id="searchInput"
+    type="text"
+    placeholder="Search by name, branch or programme..."
+    class="w-full border rounded-lg px-4 py-2 mb-6"/>
+
+  <!-- Filters -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+    <select id="programFilter" class="border rounded-lg px-3 py-2">
+      <option value="all">All Programs</option>
+      <option value="BTech">BTech</option>
+      <option value="MTech">MTech</option>
+      <option value="MCA">MCA</option>
+      <option value="BCA">BCA</option>
+      <option value="MSC">MSC</option>
+    </select>
+
+    <select id="branchFilter" class="border rounded-lg px-3 py-2">
+      <option value="all">All Branches</option>
+      <option value="CS">CS</option>
+      <option value="CS-AI">CS-AI</option>
+      <option value="IT">IT</option>
+      <option value="DS">DS</option>
+    </select>
+
+    <select id="examFilter" class="border rounded-lg px-3 py-2">
+      <option value="all">All Exam Prep</option>
+      <option value="GATE">GATE</option>
+      <option value="CAT">CAT</option>
+      <option value="Civil Services">Civil Services</option>
+      <option value="Other">Other</option>
+    </select>
+  </div>
+
+  <!-- Users Grid -->
+  <div id="usersGrid"
+       class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  </div>
+
+</main>
+
+<script>
+let users = [];
+let connections = JSON.parse(localStorage.getItem("connections")) || [];
+
+async function loadUsersFromDB() {
+  try {
+    const res = await fetch("http://localhost:3000/users");
+    const data = await res.json();
+
+    console.log("API response:", data);
+
+    users = data.map(u => ({
+      id: u.user_id,
+      name: `${u.first_name} ${u.last_name}`,
+      branch: u.branch_name || "N/A",
+      program: u.programme_name || "N/A",
+      year: u.admission_year,
+      exam: u.exam_prep || "N/A"
+    }));
+
+    renderUsers(users);
+  } catch (err) {
+    console.error("Error loading users:", err);
+  }
+}
+
+function getStatus(userId) {
+  const c = connections.find(c => c.id === userId);
+  return c ? c.status : "none";
+}
+
+const grid = document.getElementById("usersGrid");
+
+function renderUsers(list) {
+  grid.innerHTML = "";
+
+  list.forEach(user => {
+    const status = getStatus(user.id);
+
+    let actionBtn = `
+      <button onclick="viewProfile(${user.id})"
+        class="w-full border py-2 rounded-lg mb-2">
+        View Profile
+      </button>
+    `;
+
+    if (status === "none") {
+      actionBtn += `
+        <button onclick="connectUser(${user.id})"
+          class="w-full bg-blue-600 text-white py-2 rounded-lg">
+          Connect
+        </button>`;
+    }
+
+    if (status === "connected") {
+      actionBtn += `
+        <button onclick="openChat(${user.id})"
+          class="w-full bg-green-600 text-white py-2 rounded-lg">
+          Chat
+        </button>`;
+    }
+
+    grid.innerHTML += `
+      <div class="bg-white rounded-xl shadow p-5">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="w-12 h-12 rounded-full bg-blue-100
+                      flex items-center justify-center font-bold text-blue-700">
+            ${user.name[0]}
+          </div>
+          <div>
+            <p class="font-semibold">${user.name}</p>
+            <p class="text-xs text-gray-500">${user.branch}</p>
+          </div>
+        </div>
+
+        <p class="text-xs text-gray-500 mb-4">
+          ${user.program} • Admission Year: ${user.year} • ${user.exam}
+        </p>
+
+        ${actionBtn}
+      </div>
+    `;
+  });
+}
+
+function connectUser(userId) {
+  connections.push({ id: userId, status: "connected" });
+  localStorage.setItem("connections", JSON.stringify(connections));
+  renderUsers(users);
+}
+
+function viewProfile(userId) {
+  localStorage.setItem("viewProfileUserId", userId);
+  window.location.href = "view-profile.html";
+}
+
+function openChat(userId) {
+  localStorage.setItem("activeChatId", userId);
+  window.location.href = "chat.html";
+}
+
+function applyFilters() {
+  const search = searchInput.value.toLowerCase();
+
+  const filtered = users.filter(u => {
+    const searchMatch =
+      u.name.toLowerCase().includes(search) ||
+      u.branch.toLowerCase().includes(search) ||
+      u.program.toLowerCase().includes(search);
+
+    const programMatch = programFilter.value === "all" || u.program === programFilter.value;
+    const branchMatch = branchFilter.value === "all" || u.branch === branchFilter.value;
+    const examMatch = examFilter.value === "all" || u.exam === examFilter.value;
+
+    return searchMatch && programMatch && branchMatch && examMatch;
+  });
+
+  renderUsers(filtered);
+}
+
+const searchInput = document.getElementById("searchInput");
+const programFilter = document.getElementById("programFilter");
+const branchFilter = document.getElementById("branchFilter");
+const examFilter = document.getElementById("examFilter");
+
+searchInput.addEventListener("input", applyFilters);
+programFilter.addEventListener("change", applyFilters);
+branchFilter.addEventListener("change", applyFilters);
+examFilter.addEventListener("change", applyFilters);
+
+loadUsersFromDB();
+lucide.createIcons();
+</script>
+
+</body>
+</html>
