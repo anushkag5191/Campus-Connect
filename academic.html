@@ -97,6 +97,7 @@ input:focus, select:focus, textarea:focus { border-color: #4f46e5; }
 <!-- BASIC DETAILS -->
 <div class="section">
 <h3>Basic Details</h3>
+
 <div class="grid">
   <div>
     <label>Course</label>
@@ -125,14 +126,8 @@ input:focus, select:focus, textarea:focus { border-color: #4f46e5; }
     <label>Year of Admission</label>
     <input type="number" id="admissionYear" placeholder="e.g. 2023">
   </div>
-</div>
-</div>
 
-<!-- EXAM PREPARATION -->
-<div class="section">
-<h3>Exam Preparation</h3>
-
-<div class="grid">
+  <!-- ✅ EXAM PREPARATION (MOVED HERE) -->
   <div>
     <label>Are you preparing for any exam?</label>
     <select id="examPrep" onchange="handleExamPrep()">
@@ -232,9 +227,8 @@ function addProject(data = {}) {
 
 /* ---------- EXAM LOGIC ---------- */
 function handleExamPrep() {
-  const v = examPrep.value;
-  examSelectRow.style.display = v === "yes" ? "block" : "none";
-  if (v !== "yes") {
+  examSelectRow.style.display = examPrep.value === "yes" ? "block" : "none";
+  if (examPrep.value !== "yes") {
     examType.value = "";
     otherExam.value = "";
     otherExamRow.style.display = "none";
@@ -269,4 +263,35 @@ function saveAcademic() {
   });
 
   document.querySelectorAll("#projects .item-box").forEach(box => {
-    dat
+    data.projects.push({
+      name: box.querySelector(".name").value,
+      github: box.querySelector(".github").value,
+      description: box.querySelector(".description").value,
+      tech: box.querySelector(".tech").value
+    });
+  });
+
+  localStorage.setItem("campusAcademic", JSON.stringify(data));
+  alert("Academic details saved!");
+}
+
+/* ---------- LOAD ---------- */
+function loadAcademic() {
+  const data = JSON.parse(localStorage.getItem("campusAcademic") || "{}");
+  course.value = data.course || "";
+  branch.value = data.branch || "";
+  admissionYear.value = data.admissionYear || "";
+  examPrep.value = data.examPrep || "";
+  examType.value = data.examType || "";
+  otherExam.value = data.otherExam || "";
+  handleExamPrep();
+  handleOtherExam();
+  (data.internships || []).forEach(addInternship);
+  (data.projects || []).forEach(addProject);
+}
+
+window.onload = loadAcademic;
+</script>
+
+</body>
+</html>
