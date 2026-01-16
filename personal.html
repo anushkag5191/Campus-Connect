@@ -149,7 +149,7 @@ textarea {
 /* =========================
    USER ID (FROM LOGIN)
 ========================= */
-const userId = localStorage.getItem("campusUser");
+const userId = Number(localStorage.getItem("campusUser"));
 
 /* =========================
    MESSAGE HANDLER
@@ -239,3 +239,4 @@ loadProfile();
 
 </body>
 </html>
+
