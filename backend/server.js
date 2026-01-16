@@ -137,7 +137,23 @@ app.put("/users/:id", async (req, res) => {
   try {
     const pool = await poolPromise;
 
-    await pool.request()
+    // 🔹 STEP 1: Fetch existing admission_year
+    const existing = await pool.request()
+      .input("id", sql.Int, req.params.id)
+      .query(`
+        SELECT admission_year 
+        FROM Users 
+        WHERE user_id = @id
+      `);
+
+    if (existing.recordset.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const admission_year = existing.recordset[0].admission_year;
+
+    // 🔹 STEP 2: Update user profile
+    const result = await pool.request()
       .input("id", sql.Int, req.params.id)
       .input("first_name", sql.VarChar, first_name)
       .input("last_name", sql.VarChar, last_name)
@@ -145,11 +161,11 @@ app.put("/users/:id", async (req, res) => {
       .input("phone_number", sql.VarChar, phone_number || "")
       .input("alternate_phone", sql.VarChar, alternate_phone || "")
       .input("bio", sql.VarChar, bio || "")
-      .input("dob", sql.Date, dob || null)
+      .input("dob", sql.DateTime, dob ? new Date(dob) : null)
       .input("gender", sql.VarChar, gender || "")
+      .input("admission_year", sql.Int, admission_year)
       .query(`
-        UPDATE Users
-        SET 
+        UPDATE Users SET
           first_name = @first_name,
           last_name = @last_name,
           email_id = @email_id,
@@ -157,16 +173,23 @@ app.put("/users/:id", async (req, res) => {
           alternate_phone = @alternate_phone,
           bio = @bio,
           dob = @dob,
-          gender = @gender
+          gender = @gender,
+          admission_year = @admission_year
         WHERE user_id = @id
       `);
 
+    if (result.rowsAffected[0] === 0) {
+      return res.status(400).json({ error: "Update failed" });
+    }
+
     res.json({ message: "Profile saved successfully!" });
+
   } catch (err) {
     console.error("❌ Error updating user:", err);
     res.status(500).json({ error: err.message });
   }
 });
+
 
 /* =========================
    DELETE USER
@@ -192,4 +215,5 @@ app.delete("/users/:id", async (req, res) => {
 app.listen(3000, () => {
   console.log("🚀 Server running on port 3000");
 });
+
 
