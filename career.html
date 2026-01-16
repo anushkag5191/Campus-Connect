@@ -150,7 +150,6 @@ textarea {
             Internship 1
             <span class="delete" onclick="removeBlock(this,'internship')">🗑</span>
         </div>
-
         <div class="row"><label>Company Name</label><input></div>
         <div class="row"><label>Role</label><input></div>
         <div class="row"><label>Duration</label><input></div>
@@ -169,7 +168,6 @@ textarea {
             Project 1
             <span class="delete" onclick="removeBlock(this,'project')">🗑</span>
         </div>
-
         <div class="row"><label>Project Name</label><input></div>
         <div class="row"><label>GitHub Link</label><input></div>
         <div class="row"><label>Description</label><textarea></textarea></div>
@@ -206,7 +204,7 @@ textarea {
 
     <div class="row" id="otherExamRow" style="display:none;">
         <label>Specify Exam</label>
-        <input id="otherExam">
+        <input id="otherExam" placeholder="Enter exam name">
     </div>
 </div>
 
@@ -240,14 +238,21 @@ function renumber(container, type) {
 }
 
 function handleExamPrep() {
-    const val = document.getElementById("examPrep").value;
-    document.getElementById("examSelectRow").style.display = val === "yes" ? "block" : "none";
-    document.getElementById("otherExamRow").style.display = "none";
+    const prep = document.getElementById("examPrep").value;
+    if (prep === "yes") {
+        document.getElementById("examSelectRow").style.display = "block";
+    } else {
+        document.getElementById("examSelectRow").style.display = "none";
+        document.getElementById("otherExamRow").style.display = "none";
+        document.getElementById("examType").value = "";
+        document.getElementById("otherExam").value = "";
+    }
 }
 
 function handleOtherExam() {
-    const val = document.getElementById("examType").value;
-    document.getElementById("otherExamRow").style.display = val === "Other" ? "block" : "none";
+    const exam = document.getElementById("examType").value;
+    document.getElementById("otherExamRow").style.display =
+        exam === "Other" ? "block" : "none";
 }
 </script>
 
