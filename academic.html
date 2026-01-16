@@ -128,6 +128,39 @@ input:focus, select:focus, textarea:focus { border-color: #4f46e5; }
 </div>
 </div>
 
+<!-- EXAM PREPARATION -->
+<div class="section">
+<h3>Exam Preparation</h3>
+
+<div class="grid">
+  <div>
+    <label>Are you preparing for any exam?</label>
+    <select id="examPrep" onchange="handleExamPrep()">
+      <option value="">Select</option>
+      <option value="no">No</option>
+      <option value="yes">Yes</option>
+    </select>
+  </div>
+
+  <div id="examSelectRow" style="display:none;">
+    <label>Select Exam</label>
+    <select id="examType" onchange="handleOtherExam()">
+      <option value="">Select exam</option>
+      <option>GATE</option>
+      <option>CAT</option>
+      <option>Army</option>
+      <option>Civil Services</option>
+      <option>Other</option>
+    </select>
+  </div>
+
+  <div id="otherExamRow" style="display:none;">
+    <label>Specify Exam</label>
+    <input id="otherExam" placeholder="Enter exam name">
+  </div>
+</div>
+</div>
+
 <!-- INTERNSHIPS -->
 <div class="section">
 <h3>Internships</h3>
@@ -152,9 +185,8 @@ function updateTitles(container, title) {
   });
 }
 
-/* ---------- ADD INTERNSHIP ---------- */
+/* ---------- INTERNSHIP ---------- */
 function addInternship(data = {}) {
-  const container = internships;
   const div = document.createElement("div");
   div.className = "item-box";
   div.innerHTML = `
@@ -169,20 +201,17 @@ function addInternship(data = {}) {
     <label>Responsibilities</label>
     <textarea class="responsibilities"></textarea>
   `;
-  container.appendChild(div);
-
-  div.querySelector(".company").value = data.company || "";
-  div.querySelector(".role").value = data.role || "";
-  div.querySelector(".duration").value = data.duration || "";
-  div.querySelector(".location").value = data.location || "";
+  internships.appendChild(div);
+  Object.assign(div.querySelector(".company"), { value: data.company || "" });
+  Object.assign(div.querySelector(".role"), { value: data.role || "" });
+  Object.assign(div.querySelector(".duration"), { value: data.duration || "" });
+  Object.assign(div.querySelector(".location"), { value: data.location || "" });
   div.querySelector(".responsibilities").value = data.responsibilities || "";
-
-  updateTitles(container, "Internship");
+  updateTitles(internships, "Internship");
 }
 
-/* ---------- ADD PROJECT ---------- */
+/* ---------- PROJECT ---------- */
 function addProject(data = {}) {
-  const container = projects;
   const div = document.createElement("div");
   div.className = "item-box";
   div.innerHTML = `
@@ -193,14 +222,27 @@ function addProject(data = {}) {
     <label>Description</label><textarea class="description"></textarea>
     <label>Technology Used</label><input class="tech">
   `;
-  container.appendChild(div);
-
+  projects.appendChild(div);
   div.querySelector(".name").value = data.name || "";
   div.querySelector(".github").value = data.github || "";
   div.querySelector(".description").value = data.description || "";
   div.querySelector(".tech").value = data.tech || "";
+  updateTitles(projects, "Project");
+}
 
-  updateTitles(container, "Project");
+/* ---------- EXAM LOGIC ---------- */
+function handleExamPrep() {
+  const v = examPrep.value;
+  examSelectRow.style.display = v === "yes" ? "block" : "none";
+  if (v !== "yes") {
+    examType.value = "";
+    otherExam.value = "";
+    otherExamRow.style.display = "none";
+  }
+}
+
+function handleOtherExam() {
+  otherExamRow.style.display = examType.value === "Other" ? "block" : "none";
 }
 
 /* ---------- SAVE ---------- */
@@ -209,6 +251,9 @@ function saveAcademic() {
     course: course.value,
     branch: branch.value,
     admissionYear: admissionYear.value,
+    examPrep: examPrep.value,
+    examType: examType.value,
+    otherExam: otherExam.value,
     internships: [],
     projects: []
   };
@@ -224,36 +269,4 @@ function saveAcademic() {
   });
 
   document.querySelectorAll("#projects .item-box").forEach(box => {
-    data.projects.push({
-      name: box.querySelector(".name").value,
-      github: box.querySelector(".github").value,
-      description: box.querySelector(".description").value,
-      tech: box.querySelector(".tech").value
-    });
-  });
-
-  localStorage.setItem("campusAcademic", JSON.stringify(data));
-  alert("Academic details saved!");
-}
-
-/* ---------- LOAD ---------- */
-function loadAcademic() {
-  const data = JSON.parse(localStorage.getItem("campusAcademic") || "{}");
-
-  course.value = data.course || "";
-  branch.value = data.branch || "";
-  admissionYear.value = data.admissionYear || "";
-
-  (data.internships || []).forEach(addInternship);
-  (data.projects || []).forEach(addProject);
-}
-
-/* ---------- EXPOSE TO PARENT ---------- */
-window.saveFromParent = saveAcademic;
-
-/* ---------- INIT ---------- */
-window.onload = loadAcademic;
-</script>
-
-</body>
-</html>
+    dat
