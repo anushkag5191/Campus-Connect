@@ -45,6 +45,9 @@ app.get("/users", async (req, res) => {
 /* =========================
    GET SINGLE USER
 ========================= */
+/* =========================
+   GET SINGLE USER (FIXED)
+========================= */
 app.get("/users/:id", async (req, res) => {
   try {
     const pool = await poolPromise;
@@ -60,15 +63,16 @@ app.get("/users/:id", async (req, res) => {
           bio,
           phone_number,
           alternate_phone,
-          age,
+          dob,
           gender,
-          country,
-          nationality,
-          current_address,
           admission_year
         FROM Users
         WHERE user_id = @id
       `);
+
+    if (result.recordset.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
 
     res.json(result.recordset[0]);
   } catch (err) {
@@ -76,6 +80,7 @@ app.get("/users/:id", async (req, res) => {
     res.status(500).send(err.message);
   }
 });
+
 
 
 /* =========================
